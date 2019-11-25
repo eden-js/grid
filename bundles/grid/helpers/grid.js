@@ -59,6 +59,12 @@ class GridHelper extends Helper {
       };
     });
 
+    // add sanitise funciton
+    this.sanitise = (...args) => {
+      // add args for sanitise
+      this.__data.sanitise = args;
+    };
+
     // set sort
     this.sort = (sort, way) => {
       // add sort
@@ -437,7 +443,7 @@ class GridHelper extends Helper {
           // sanitise row
           if (this.get('models')) {
             // return sanitised model
-            return Object.assign(await row.sanitise(), {
+            return Object.assign(this.__data.sanitise ? await row.sanitise(...(this.__data.sanitise)) : await row.sanitise(), {
               _id : row.get('_id').toString(),
             });
           }
