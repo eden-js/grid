@@ -1,5 +1,5 @@
 <grid-td>
-  <div if={ props.isUpdating(props.row, props.column) } is={ props.column.update } on-save={ onSave } row={ props.row } column={ props.column } data-value={ getValue() } />
+  <div if={ props.isUpdating(props.row, props.column) } is={ props.column.update } on-save={ props.onSave } row={ props.row } column={ props.column } data-value={ getValue() } />
 
   <div if={ props.column.tag && !props.isUpdating(props.row, props.column) } is={ props.column.tag } class="d-inline-block" row={ props.row } column={ props.column } data-value={ getValue() } />
   <raw if={ !props.column.tag && !props.isUpdating(props.row, props.column) } data={ { 'html' : getValue() } } />
