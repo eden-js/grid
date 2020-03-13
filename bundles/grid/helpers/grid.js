@@ -513,11 +513,12 @@ class GridHelper extends Helper {
 
       // push column
       response.data.filter[key] = {
-        id       : key,
-        type     : value.type,
-        title    : value.title,
-        options  : value.options,
-        priority : value.priority || 0,
+        id          : key,
+        type        : value.type,
+        title       : value.title,
+        options     : value.options,
+        priority    : value.priority || 0,
+        placeholder : value.placeholder,
       };
     }
 

@@ -4,7 +4,7 @@
       { props.filter.title }
     </label>
 
-    <input class={ classes({ 'form-control' : true }) } type="text" value={ filterValue() } onchange={ (e) => onFilter(e) } required />
+    <input class={ classes({ 'form-control' : true }) } placeholder={ props.filter.placeholder } type="text" value={ filterValue() } onchange={ (e) => onFilter(e) } required />
   </div>
   <script>
     // import dependencies

@@ -4,7 +4,7 @@
       { props.filter.title }
     </label>
 
-    <select if={ props.filter.options } class={ classes({ 'form-control' : true }) } onchange={ (e) => onFilter(e) }>
+    <select if={ props.filter.options } placeholder={ props.filter.placeholder } class={ classes({ 'form-control' : true }) } onchange={ (e) => onFilter(e) }>
       <option each={ (option, i) in props.filter.options } value={ option.value } selected={ option.value === filterValue() }>
         { option.name }
       </option>
