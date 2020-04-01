@@ -6,7 +6,7 @@
     "excel4node": "^1.7.0",
     "html-to-text": "^5.1.1",
     "json2csv": "^4.3.4",
-    "uuid": "^3.3.2"
+    "uuid": "^7.0.3"
   },
   "engines": {
     "node": ">= 8.0.0"
