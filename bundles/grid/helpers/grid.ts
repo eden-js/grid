@@ -1,11 +1,11 @@
 // Require local class dependencies
-const xl       = require('excel4node');
-const uuid     = require('uuid');
-const Helper   = require('helper');
-const moment   = require('moment');
-const toText   = require('html-to-text');
-const dotProp  = require('dot-prop');
-const json2csv = require('json2csv');
+import xl       from 'excel4node';
+import uuid     from 'uuid';
+import Helper   from 'helper';
+import moment   from 'moment';
+import toText   from 'html-to-text';
+import dotProp  from 'dot-prop';
+import json2csv from 'json2csv';
 
 
 // require models
@@ -14,7 +14,7 @@ const Grid = model('grid');
 /**
  * Create Grid Helper class
  */
-class GridHelper extends Helper {
+export default class GridHelper extends Helper {
   /**
    * Construct Grid Helper class
    *
@@ -148,7 +148,6 @@ class GridHelper extends Helper {
       ['where', 'match', 'eq', 'ne', 'or', 'and', 'elem', 'in', 'nin', 'gt', 'lt', 'gte', 'lte'].forEach((method) => {
         // Create new function
         this[method] = (...args) => {
-          // Set where
           // eslint-disable-next-line no-return-assign
           return this.__query = this.__query[method](...args);
         };
@@ -800,10 +799,3 @@ class GridHelper extends Helper {
     return (item && typeof item === 'object' && !Array.isArray(item));
   }
 }
-
-/**
- * Export new Grid Helper instance
- *
- * @type {GridHelper}
- */
-module.exports = GridHelper;

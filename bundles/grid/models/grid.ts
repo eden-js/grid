@@ -1,11 +1,11 @@
 
 // import dependencies
-const Model = require('model');
+import Model from 'model';
 
 /**
  * create user class
  */
-class Grid extends Model {
+export default class Grid extends Model {
   /**
    * sanitises placement
    *
@@ -18,9 +18,3 @@ class Grid extends Model {
     };
   }
 }
-
-/**
- * export user class
- * @type {user}
- */
-module.exports = Grid;

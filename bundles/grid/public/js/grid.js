@@ -5,7 +5,7 @@ const Events  = require('events');
 const dotProp = require('dot-prop');
 
 // Require live model
-const EdenModel = require('model/public/js/model');
+const EdenModel = require('sync/public/js/model');
 
 /**
  * create grid store
