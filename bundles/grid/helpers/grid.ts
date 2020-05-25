@@ -1,12 +1,12 @@
 // Require local class dependencies
 import xl       from 'excel4node';
+import fs       from 'fs';
 import uuid     from 'uuid';
 import Helper   from 'helper';
 import moment   from 'moment';
 import toText   from 'html-to-text';
 import dotProp  from 'dot-prop';
 import json2csv from 'json2csv';
-
 
 // require models
 const Grid = model('grid');
@@ -686,7 +686,7 @@ export default class GridHelper extends Helper {
     const json2csvParser = new Json2csvParser({
       fields,
     });
-    const csv = json2csvParser.parse(rows);
+    const csv = json2csvParser.parse(rows.map((row) => row.get ? row.get() : row));
 
     // get model
     const FormModel = this.get('model');
@@ -714,7 +714,7 @@ export default class GridHelper extends Helper {
     // create workbook
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet(`${this.get('id') || (new FormModel()).constructor.name}-${moment().format('DD-MM-YYYY')}.csv`);
-    const fields = Object.keys(rows[0]);
+    const fields = Object.keys(rows[0] && rows[0].get ? rows[0].get() : rows[0]);
 
     // add titles
     fields.forEach((title, i) => {
@@ -725,10 +725,10 @@ export default class GridHelper extends Helper {
     // loop rows
     rows.forEach((row, i) => {
       // values
-      Object.values(row).forEach((col, x) => {
+      Object.values(row.get ? row.get() : row).forEach((col, x) => {
         // create worksheet cell
         ws.cell((i + 2), (x + 1))
-          .string(col);
+          .string(`${col}`);
       });
     });
 
@@ -749,7 +749,15 @@ export default class GridHelper extends Helper {
 
     // download XLSX
     res.set('Content-Disposition', `attachment; filename=${this.get('id') || (new FormModel()).constructor.name}-${moment().format('DD-MM-YYYY')}.xlsx`);
-    res.download(`/tmp/${UUID}.xlsx`);
+
+    // create stream
+    const stream = fs.createReadStream(`/tmp/${UUID}.xlsx`);
+
+    // pipe to response
+    stream.pipe(res).on('end', () => {
+      // remove
+      fs.remove(`/tmp/${UUID}.xlsx`);
+    });
   }
 
   // ////////////////////////////////////////////////////////////////////////////
