@@ -1,12 +1,12 @@
 // Require local class dependencies
 import xl       from 'excel4node';
 import fs       from 'fs';
-import uuid     from 'uuid';
 import Helper   from 'helper';
 import moment   from 'moment';
 import toText   from 'html-to-text';
 import dotProp  from 'dot-prop';
 import json2csv from 'json2csv';
+import { v4 as uuid } from 'uuid';
 
 // require models
 const Grid = model('grid');
