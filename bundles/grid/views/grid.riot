@@ -62,7 +62,7 @@
                   </p>
                   <hr />
                   <div class="list-group" ref="reorder">
-                    <button type="button" each={ (column, i) in getAllColumns() } class={ classes({ 'list-group-item list-group-item-action' : true, 'list-group-item-primary' : !column.hidden }) } data-column={ column.id } onclick={ (e) => onToggleColumn(e, column) }>
+                    <button type="button" each={ (column, i) in getAllColumns() } class={ classes({ 'list-group-item list-group-item-action btn-reorder' : true, 'list-group-item-primary' : !column.hidden }) } data-column={ column.id } onclick={ (e) => onToggleColumn(e, column) }>
                       { eden.get('i18n.t')(column.title) }
                     </button>
                   </div>
@@ -190,8 +190,19 @@
         // check frontend
         if (!this.eden.frontend) return;
 
-        // init dragula
-        this.initDragula();
+        // init sort
+        this.initSort();
+      }
+
+      /**
+       * on mounted
+       */
+      onUpdated() {
+        // check frontend
+        if (!this.eden.frontend) return;
+
+        // init sort
+        this.initSort();
       }
 
       /**
@@ -305,43 +316,104 @@
       }
 
       /**
-       * init dragula
+       * init sort
        */
-      initDragula () {
-        // require dragula
-        const dragula = require('dragula');
+      initSort () {
+        // require sort
+        const Sortable = require('sortablejs');
 
-        // do dragula
-        this.dragula = dragula([this.$('[ref="reorder"]')]).on('drop', (el, target, source, sibling) => {
-          // child nodes total
-          const total = this.$('[ref="reorder"]').childNodes.length;
+        // sortables
+        if (this.sortables) {
+          try {
+            // destroy
+            this.sortables.forEach((sortable) => sortable.destroy());
+          } catch (e) {}
+        }
 
-          // get order
-          this.$('[ref="reorder"]').childNodes.forEach((child, i) => {
-            // check get attribute
-            if (!child || !child.getAttribute) return;
+        // sortables
+        this.sortables = [];
 
-            // get column
-            const id = child.getAttribute('data-column');
+        // old index
+        let oldPrev = null;
+        let oldIndex = 0;
 
-            // find column
-            this.grid.alter.set(`data.column.${id}.priority`, total - i);
-          });
+        // create sortables
+        this.$$('.btn-reorder').forEach((item) => {
+          // push
+          this.sortables.push(new Sortable(item, {
+            group          : 'grid-reorder',
+            animation      : 200,
+            fallbackOnBody : true,
 
-          // set alter
-          Object.values(this.grid.get('column')).forEach((col) => {
-            // set priority
-            col.priority = this.grid.alter.get(`data.column.${col.id}.priority`);
-          });
+            onStart : (e) => {
+              // old index
+              oldPrev = null;
+              oldIndex = 0;
 
-          // update grid
-          this.grid.update();
-        });
+              // prev
+              let prev = null;
 
-        // on update
-        this.on('updated', () => {
-          // set containers
-          this.dragula.containers = [this.$('[ref="reorder"]')];
+              // loop physical fields
+              let i = 0;
+              e.from.childNodes.forEach((f) => {
+                // check placement
+                if (!f.getAttribute) return;
+
+                // old index
+                if ($(f).is(e.item)) {
+                  // set prev
+                  oldIndex = i;
+                  oldPrev = prev;
+                }
+
+                // set prev
+                prev = f;
+
+                // amend i
+                i++;
+              });
+            },
+
+            onEnd : async (e) => {
+              // set item
+              const el     = e.item;
+              const target = e.to;
+              const source = e.from;
+
+              // child nodes total
+              const total = this.$('[ref="reorder"]').childNodes.length;
+
+              // get order
+              this.$('[ref="reorder"]').childNodes.forEach((child, i) => {
+                // check get attribute
+                if (!child || !child.getAttribute) return;
+
+                // get column
+                const id = child.getAttribute('data-column');
+
+                // find column
+                this.grid.alter.set(`data.column.${id}.priority`, total - i);
+              });
+
+              // set alter
+              Object.values(this.grid.get('column')).forEach((col) => {
+                // set priority
+                col.priority = this.grid.alter.get(`data.column.${col.id}.priority`);
+              });
+
+              // reset for reorder
+              if (oldIndex === 0) {
+                // prepend to
+                $(el).prependTo(source);
+              } else {
+                // find previous
+                $(oldPrev).after(el);
+              }
+
+              // update grid
+              this.grid.update();
+            }
+          }));
         });
       }
 
