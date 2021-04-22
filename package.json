@@ -5,7 +5,7 @@
   "dependencies": {
     "dot-prop": "^6.0.1",
     "excel4node": "^1.7.0",
-    "html-to-text": "^6.0.0",
+    "html-to-text": "^7.1.1",
     "json2csv": "^5.0.5",
     "sortablejs": "^1.13.0",
     "uuid": "^8.3.2"
