@@ -1,0 +1,18 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "17:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: html-to-text
+    versions:
+    - 7.0.0
+  - dependency-name: uuid
+    versions:
+    - 8.3.2
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
